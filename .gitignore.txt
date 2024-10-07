@@ -1,3 +1,33 @@
-venv/
-*.pyc
-__pycache__/
+# Byte-compiled / optimized / DLL files
+# __pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+# venv/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Heroku-related
+Procfile
+
+# Logs
+*.log
+*.sqlite3
