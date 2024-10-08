@@ -9,3 +9,9 @@ urllib3==2.2.2
 matplotlib==3.9.1     # For static and animated visualizations
 plotly==5.23.0        # For interactive visualizations
 graphviz==0.20.3      # If you're using graph-based visualizations (optional)
+
+Orange3==3.37.0
+
+# Add PyTorch and Torchvision for using SqueezeNet
+torch==2.0.1         # This version is suitable for Heroku deployment (modify if needed)
+torchvision==0.15.2  # The corresponding torchvision version for the torch version above
