@@ -58,6 +58,7 @@ def index():
 # Health classification route (accepting image)
 @app.route('/health', methods=['POST'])
 def classify_health():
+    print("Received health classification request")  # Debug print
     if 'file' not in request.files:
         return jsonify({'error': 'No file provided'}), 400
     
@@ -78,6 +79,7 @@ def classify_health():
 # Species classification route (accepting image)
 @app.route('/species', methods=['POST'])
 def classify_species():
+    print("Received species classification request")  # Debug print
     if 'file' not in request.files:
         return jsonify({'error': 'No file provided'}), 400
     
@@ -107,6 +109,7 @@ def classify_species():
 # Sickness classification route (accepting image)
 @app.route('/sickness', methods=['POST'])
 def classify_sickness():
+    print("Received disease classification request")  # Debug print
     if 'file' not in request.files:
         return jsonify({'error': 'No file provided'}), 400
     
