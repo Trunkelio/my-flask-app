@@ -8,7 +8,7 @@ from torchvision import models
 
 app = Flask(__name__)
 
-# Load all three models using .pkcls files (or .pa files)
+# Load all three models using .pkcls files
 with open('klasifikacija_zdravja_logistic_regression.pkcls', 'rb') as f:
     health_model = pickle.load(f)
 
@@ -18,9 +18,13 @@ with open('klasifikacija_vrste_logistic_regression.pkcls', 'rb') as f:
 with open('klasifikacija_bolezni_logistic_regression.pkcls', 'rb') as f:
     sickness_model = pickle.load(f)
 
-# Load pre-trained SqueezeNet for image embedding
+# Load pre-trained SqueezeNet for image embedding (force to CPU)
 squeezenet = models.squeezenet1_1(pretrained=True)
 squeezenet.eval()  # Set to evaluation mode (no training)
+
+# Force the model to CPU
+device = torch.device("cpu")
+squeezenet = squeezenet.to(device)
 
 # Define image transformation pipeline (resize, normalize, convert to tensor)
 transform = transforms.Compose([
@@ -28,6 +32,43 @@ transform = transforms.Compose([
     transforms.ToTensor(),  # Convert to PyTorch tensor
     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])  # Normalization used by SqueezeNet
 ])
+
+# Label mappings for health, species, and sickness classifications
+health_labels = {
+    0: "Healthy",
+    1: "Sick",
+    2: "Healthy_Sick"
+}
+
+species_labels = {
+    0: "Grozdje",
+    1: "Jabolko",
+    2: "Jagoda",
+    3: "Koruza",
+    4: "Mango",
+    5: "Paradajz"
+}
+
+sickness_labels = {
+    0: "Grozdje___Black_Measles",
+    1: "Grozdje___Black_rot",
+    2: "Grozdje___Isariopsis_Leaf_Spot",
+    3: "Jabolko__Cedar_apple_rust",
+    4: "Jabolko___Apple_scab",
+    5: "Jabolko___Black_rot",
+    6: "Jagoda_angular_leafspot",
+    7: "Jagoda_gray_mold",
+    8: "Jagoda___Leaf_scorch",
+    9: "Koruza___Blight_in_corn_Leaf",
+    10: "Koruza___Common_rust",
+    11: "Koruza___Listne_pege",
+    12: "Mango___Bakterijske_bolezni",
+    13: "Mango___Glivične_bolezni",
+    14: "Mango___Škodljivci",
+    15: "Paradajz___Septoria_leaf_spot",
+    16: "Paradajz___Target_Spot",
+    17: "Paradajz___Virusne_bolezni"
+}
 
 def extract_image_embedding(image):
     """
@@ -40,6 +81,9 @@ def extract_image_embedding(image):
     """
     # Apply the image transformations (resize, tensor conversion, normalization)
     image_tensor = transform(image).unsqueeze(0)  # Add batch dimension (1, 3, 256, 256)
+
+    # Send tensor to CPU
+    image_tensor = image_tensor.to(device)
 
     # Get the image embeddings (forward pass through SqueezeNet)
     with torch.no_grad():
@@ -70,11 +114,13 @@ def classify_health():
     # Extract image embeddings using SqueezeNet
     input_data = extract_image_embedding(image)
     
-    # Predict the health status (returns a string label)
+    # Predict the health status
     health_prediction = health_model.predict([input_data])
     
-    return jsonify({'health_status': health_prediction[0]})
-
+    # Convert the predicted class index to a label
+    health_status = health_labels.get(int(health_prediction[0]), "Unknown")
+    
+    return jsonify({'health_status': health_status})
 
 # Species classification route (accepting image)
 @app.route('/species', methods=['POST'])
@@ -91,20 +137,20 @@ def classify_species():
     # Extract image embeddings using SqueezeNet
     input_data = extract_image_embedding(image)
     
-    # Predict the species (returns a string label)
+    # Predict the species
     species_prediction = species_model.predict([input_data])
     
-    # Get confidence score (returns probabilities for each class)
+    # Get confidence score
     species_confidence = species_model.predict_proba([input_data])
+    confidence_percentage = round(float(species_confidence.max()) * 100, 2)
     
-    # Get the confidence for the predicted class and convert to percentage
-    confidence_percentage = float(species_confidence.max()) * 100
+    # Convert the predicted class index to a label
+    species_name = species_labels.get(int(species_prediction[0]), "Unknown")
     
     return jsonify({
-        'species_name': species_prediction[0],        # This is the species label
-        'confidence': confidence_percentage           # Confidence as a percentage
+        'species_name': species_name,
+        'confidence': confidence_percentage
     })
-
 
 # Sickness classification route (accepting image)
 @app.route('/sickness', methods=['POST'])
@@ -121,11 +167,13 @@ def classify_sickness():
     # Extract image embeddings using SqueezeNet
     input_data = extract_image_embedding(image)
     
-    # Predict the disease (returns a string label)
+    # Predict the disease
     sickness_prediction = sickness_model.predict([input_data])
     
-    return jsonify({'disease': sickness_prediction[0]})
-
+    # Convert the predicted class index to a label
+    disease = sickness_labels.get(int(sickness_prediction[0]), "Unknown")
+    
+    return jsonify({'disease': disease})
 
 if __name__ == '__main__':
     app.run(debug=True)

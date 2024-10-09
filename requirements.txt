@@ -10,5 +10,5 @@ urllib3==2.2.2
 Orange3==3.37.0
 
 # Add PyTorch and Torchvision for using SqueezeNet
-torch==2.0.1         # This version is suitable for Heroku deployment (modify if needed)
-torchvision==0.15.2  # The corresponding torchvision version for the torch version above
+torch==2.0.1+cpu         # This version is suitable for Heroku deployment (modify if needed) CPU only, brez GPU dependencija
+torchvision==0.15.2+cpu  # The corresponding torchvision version for the torch version above
