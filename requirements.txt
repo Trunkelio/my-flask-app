@@ -1,17 +1,19 @@
 Flask==3.0.3
-numpy==1.26.4
-#pandas==2.2.2
+numpy==1.24.4  # Compatible with most environments
+# pandas==2.1.0  # Uncomment if needed, downgrade to a compatible version as needed
 scikit-learn==1.3.2
-scipy==1.14.1
+scipy==1.10.1  # Downgraded for better compatibility
 Werkzeug==3.0.4
-requests==2.32.3
-urllib3==2.2.2
+requests==2.31.0  # Slightly lower version for compatibility
+urllib3==1.26.16  # Ensure compatibility with requests and boto
 
-Orange3==3.37.0
+# Orange3 dependencies (only include essential parts of Orange)
+Orange3==3.33.0  # Slightly older but more stable for various systems
 
 # PyTorch for CPU (remove GPU/CUDA libs)
-torch>=1.12.0,<2.0  # Compatible with older systems and Orange
-torchvision>=0.13.0,<0.15.0  # Use appropriate torchvision for PyTorch compatibility
+torch==1.13.1+cpu  # Set to CPU-compatible version for wider compatibility
+torchvision==0.14.1+cpu  # Matching torchvision version for torch 1.13.1
 
 # Gunicorn for production WSGI server
-gunicorn>=20.0,<21.0
+gunicorn==20.1.0  # Updated to avoid future issues
+
