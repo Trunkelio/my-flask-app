@@ -11,8 +11,8 @@ urllib3==1.26.16  # Ensure compatibility with requests and boto
 Orange3==3.33.0  # Slightly older but more stable for various systems
 
 # PyTorch for CPU (remove GPU/CUDA libs)
-torch==1.13.1+cpu  # Set to CPU-compatible version for wider compatibility
-torchvision==0.14.1+cpu  # Matching torchvision version for torch 1.13.1
+torch==1.13.1  # Standard torch version (CPU is the default if no GPU available)
+torchvision==0.14.1  # Compatible version for torch 1.13.1
 
 # Gunicorn for production WSGI server
 gunicorn==20.1.0  # Updated to avoid future issues
