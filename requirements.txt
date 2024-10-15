@@ -10,3 +10,14 @@ Orange3==3.30.0  # Make sure Orange3 can load your .pkcls models
 
 # Gunicorn for production WSGI server
 gunicorn>=20.0,<21.0
+
+Flask==3.0.3
+numpy==1.26.0
+Pillow==10.0.0
+torch>=1.12.0,<2.0  # Ensure compatibility with torchvision
+torchvision>=0.13.0,<0.15.0  # Works with the specified PyTorch version
+scikit-learn==1.4.2
+requests==2.32.3
+urllib3==2.2.2
+Orange3==3.30.0  # Ensure Orange3 can load .pkcls models
+gunicorn>=20.0,<21.0
