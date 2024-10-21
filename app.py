@@ -140,7 +140,7 @@ def classify_sickness():
     
     # Check for '/' using ASCII value and split
     if any(ord(char) == 47 for char in disease):  # ASCII value 47 is '/'
-    disease = disease.split("/")[1]  # Keep only the part after '/'
+        disease = disease.split("/")[1]  # Keep only the part after '/'
 
     return jsonify({'disease': disease, 'confidence': confidence})  # Vrne rezultat kot JSON
 
