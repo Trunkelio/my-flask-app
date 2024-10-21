@@ -110,8 +110,8 @@ def classify_species():
     probabilities = species_model.predict_proba(table)[0]  # Dobimo verjetnosti
     confidence = max(probabilities) * 100  # Izračunamo zaupanje v napoved (v odstotkih)
 
-    # Pridobimo ime vrste iz oznak razredov
-    species_name = species_class_labels[int(species_prediction)]
+    # Pridobimo ime vrste iz oznak razredov, keeping only the part before "/"
+    species_name = species_class_labels[int(species_prediction)].split("/")[0]
 
     return jsonify({'species_name': species_name, 'confidence': confidence})  # Vrne rezultat kot JSON
 
@@ -132,11 +132,16 @@ def classify_sickness():
 
     # Napoved bolezni rastline
     sickness_prediction = sickness_model(table)[0]
+    probabilities = sickness_model.predict_proba(table)[0]  # Dobimo verjetnosti za bolezni
+    confidence = max(probabilities) * 100  # Izračunamo zaupanje v napoved (v odstotkih)
 
-    # Pridobimo ime bolezni iz oznak razredov
+    # Pridobimo ime bolezni iz oznak razredov, keeping only the part after "/"
     disease = sickness_class_labels[int(sickness_prediction)]
+    
+    if "/" in disease:
+        disease = disease.split("/")[1]  # Keep only the part after "/"
 
-    return jsonify({'disease': disease})  # Vrne rezultat kot JSON
+    return jsonify({'disease': disease, 'confidence': confidence})  # Vrne rezultat kot JSON
 
 if __name__ == '__main__':
     app.run(debug=True)  # Zažene Flask aplikacijo v načinu za razhroščevanje
