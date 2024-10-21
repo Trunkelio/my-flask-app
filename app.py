@@ -13,7 +13,7 @@ app = Flask(__name__)  # Inicializacija Flask aplikacije
 with open('klasifikacija_zdravja_logistic_regression.pkcls', 'rb') as f:
     health_model = pickle.load(f)  # Naloži model za klasifikacijo zdravja rastlin
 
-with open('klasifikacija_vrste_logistic_regression.pkcls', 'rb') as f:
+with open('klasifikacija_sort_logistic_regression.pkcls', 'rb') as f:
     species_model = pickle.load(f)  # Naloži model za klasifikacijo vrst rastlin
 
 with open('klasifikacija_bolezni_logistic_regression.pkcls', 'rb') as f:
