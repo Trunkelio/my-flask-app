@@ -134,19 +134,14 @@ def classify_species():
 # Endpoint za klasifikacijo bolezni glede na vrsto rastline
 @app.route('/sickness', methods=['POST'])
 def classify_sickness():
-    if 'file' not in request.files:
-        return jsonify({'error': 'Nobena datoteka ni bila poslana'}), 400
+    if 'file' not in request.files or 'species_name' not in request.form:
+        return jsonify({'error': 'Nobena datoteka ali vrsta rastline ni bila poslana'}), 400
 
     file = request.files['file']
+    species_name = request.form['species_name']
     image = Image.open(file.stream).convert('RGB')
 
-    # Step 1: Classify the species of the plant
-    embedding = extract_image_embedding(image)
-    species_table = convert_to_orange_table(embedding, species_model)
-    species_prediction = species_model(species_table)[0]
-    species_name = species_class_labels[int(species_prediction)]
-
-    # Step 2: Select the correct sickness model based on the species
+    # Step 2: Select the correct sickness model based on the provided species
     if species_name == "Mango":
         sickness_model = mango_sickness_model
     elif species_name == "Grozdje":
@@ -163,6 +158,7 @@ def classify_sickness():
         return jsonify({'error': f"Unknown species: {species_name}"}), 400
 
     # Step 3: Classify the sickness for the identified species
+    embedding = extract_image_embedding(image)
     sickness_table = convert_to_orange_table(embedding, sickness_model)
     sickness_prediction = sickness_model(sickness_table)[0]
     sickness_probabilities = sickness_model.predict_proba(sickness_table)[0]
