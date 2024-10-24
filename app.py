@@ -165,7 +165,7 @@ def classify_sickness():
         sickness_model = strawberry_sickness_model
     elif normalized_species_name == "koruza":
         sickness_model = corn_sickness_model
-    elif normalized_species_name == "paradižnik" or normalized_species_name == "paradiznik":
+    elif normalized_species_name == "paradajz":
         sickness_model = tomato_sickness_model
     else:
         return jsonify({'error': f"Unknown species: {normalized_species_name}"}), 400
