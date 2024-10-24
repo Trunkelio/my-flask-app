@@ -1,9 +1,9 @@
-import Orange  # For handling data tables and models
+import Orange  # For handling data tables and machine learning models
 import pickle  # For loading serialized models
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify  # For creating the Flask API
 from PIL import Image  # For image processing
 import torch  # For tensor computations
-import torchvision.transforms as transforms
+import torchvision.transforms as transforms  # For image transformations
 from torchvision import models  # For pre-trained models
 import numpy as np  # For numerical operations
 
