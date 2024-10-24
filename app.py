@@ -157,16 +157,22 @@ def classify_sickness():
     # Step 3: Select the correct sickness model
     if normalized_species_name == "mango":
         sickness_model = mango_sickness_model
+        print(f"Predicted model: mango_sickness_model")
     elif normalized_species_name == "grozdje":
         sickness_model = grape_sickness_model
+        print(f"Predicted model: grozdje_sickness_model")
     elif normalized_species_name == "jabolko":
         sickness_model = apple_sickness_model
+        print(f"Predicted model: jabolko_sickness_model")
     elif normalized_species_name == "jagoda":
         sickness_model = strawberry_sickness_model
+        print(f"Predicted model: jagoda_sickness_model")
     elif normalized_species_name == "koruza":
         sickness_model = corn_sickness_model
+        print(f"Predicted model: koruza_sickness_model")
     elif normalized_species_name == "paradajz":
         sickness_model = tomato_sickness_model
+        print(f"Predicted model: paradajz_sickness_model")
     else:
         return jsonify({'error': f"Unknown species: {normalized_species_name}"}), 400
 
