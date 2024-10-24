@@ -129,51 +129,64 @@ def classify_species():
 
     return jsonify({'species_name': species_name, 'confidence': confidence})
 
-# Sickness classification endpoint
+# Modified sickness classification endpoint
 @app.route('/sickness', methods=['POST'])
 def classify_sickness():
-    if 'file' not in request.files or 'species_name' not in request.form:
-        return jsonify({'error': 'No file or species name provided'}), 400
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
 
     file = request.files['file']
-    species_name = request.form['species_name']
-
-    # Normalize species name
-    species_name = species_name.strip().capitalize()
-
-    # Log the received species name
-    print(f"Received species_name: '{species_name}'")
-
     image = Image.open(file.stream).convert('RGB')
 
-    # Select the correct sickness model
-    if species_name == "Mango":
+    # Step 1: Extract image embedding
+    embedding = extract_image_embedding(image)
+
+    # Step 2: Classify species
+    species_table = convert_to_orange_table(embedding, species_model)
+    species_prediction = species_model(species_table)[0]
+    species_probabilities = species_model.predict_proba(species_table)[0]
+    species_confidence = max(species_probabilities) * 100
+    species_name = species_class_labels[int(species_prediction)].split("/")[0]
+
+    # Normalize species name
+    normalized_species_name = species_name.strip().lower()
+
+    # Log the predicted species name
+    print(f"Predicted species_name: '{normalized_species_name}'")
+
+    # Step 3: Select the correct sickness model
+    if normalized_species_name == "mango":
         sickness_model = mango_sickness_model
-    elif species_name == "Grozdje":
+    elif normalized_species_name == "grozdje":
         sickness_model = grape_sickness_model
-    elif species_name == "Jabolko":
+    elif normalized_species_name == "jabolko":
         sickness_model = apple_sickness_model
-    elif species_name == "Jagoda":
+    elif normalized_species_name == "jagoda":
         sickness_model = strawberry_sickness_model
-    elif species_name == "Koruza":
+    elif normalized_species_name == "koruza":
         sickness_model = corn_sickness_model
-    elif species_name == "Paradižnik":
+    elif normalized_species_name == "paradižnik" or normalized_species_name == "paradiznik":
         sickness_model = tomato_sickness_model
     else:
-        return jsonify({'error': f"Unknown species: {species_name}"}), 400
+        return jsonify({'error': f"Unknown species: {normalized_species_name}"}), 400
 
-    # Extract features
-    embedding = extract_image_embedding(image)
+    # Step 4: Classify sickness
     sickness_table = convert_to_orange_table(embedding, sickness_model)
     sickness_prediction = sickness_model(sickness_table)[0]
     sickness_probabilities = sickness_model.predict_proba(sickness_table)[0]
-    confidence = max(sickness_probabilities) * 100
+    sickness_confidence = max(sickness_probabilities) * 100
 
     # Get sickness name
     sickness_labels = sickness_model.domain.class_var.values
     sickness = sickness_labels[int(sickness_prediction)]
 
-    return jsonify({'species_name': species_name, 'disease': sickness, 'confidence': confidence})
+    return jsonify({
+        'species_name': species_name,
+        'species_confidence': species_confidence,
+        'disease': sickness,
+        'disease_confidence': sickness_confidence
+    })
+
 
 if __name__ == '__main__':
     app.run(debug=True)
