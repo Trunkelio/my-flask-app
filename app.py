@@ -9,6 +9,14 @@ import numpy as np  # Knjižnica za delo z večdimenzionalnimi polji in matemati
 
 app = Flask(__name__)  # Inicializacija Flask aplikacije
 
+# Load the health classification model
+with open('klasifikacija_zdravja_logistic_regression.pkcls', 'rb') as f:
+    health_model = pickle.load(f)
+
+# Load the species classification model
+with open('klasifikacija_sort_logistic_regression.pkcls', 'rb') as f:
+    species_model = pickle.load(f)
+
 # Load all species-specific sickness models
 with open('klasifikacija_grozdje_bolezni_logistic_regression.pkcls', 'rb') as f:
     grape_sickness_model = pickle.load(f)
@@ -28,11 +36,8 @@ with open('klasifikacija_mango_bolezni_logistic_regression.pkcls', 'rb') as f:
 with open('klasifikacija_paradajz_bolezni_logistic_regression.pkcls', 'rb') as f:
     tomato_sickness_model = pickle.load(f)
 
-# Load the species classification model
-with open('klasifikacija_sort_logistic_regression.pkcls', 'rb') as f:
-    species_model = pickle.load(f)
-
 # Extract class labels from models
+health_class_labels = health_model.domain.class_var.values  # Oznake za razrede zdravja (npr. 'Healthy', 'Sick')
 species_class_labels = species_model.domain.class_var.values  # Oznake za vrste rastlin
 
 # Load SqueezeNet for image embeddings
@@ -74,6 +79,57 @@ def convert_to_orange_table(embedding, model):
         metas = None  # Če ni meta-atributov, nastavimo na None
 
     return Orange.data.Table.from_numpy(domain, X, Y, metas)  # Ustvarimo Orange podatkovno tabelo
+
+# Glavna stran API-ja (dobrodošlica)
+@app.route('/')
+def index():
+    return "Dobrodošli v API za klasifikacijo rastlin. Izberite ustrezne endpointe za dostop do podatkov: /health, /species, ali /sickness."
+
+# Endpoint za klasifikacijo zdravja rastline
+@app.route('/health', methods=['POST'])
+def classify_health():
+    if 'file' not in request.files:
+        return jsonify({'error': 'Nobena datoteka ni bila poslana'}), 400  # Vrne napako, če ni priložene datoteke
+
+    file = request.files['file']
+    image = Image.open(file.stream).convert('RGB')  # Odpre sliko iz zahteve in jo pretvori v RGB format
+
+    # Ekstrakcija značilk iz slike
+    embedding = extract_image_embedding(image)
+
+    # Pretvorba v Orange podatkovno tabelo z uporabo modela za zdravje
+    table = convert_to_orange_table(embedding, health_model)
+
+    # Napoved zdravja rastline
+    health_prediction = health_model(table)[0]  # Pridobimo napovedani razred
+    health_status = health_class_labels[int(health_prediction)]  # Pridobimo ime razreda iz oznak
+
+    return jsonify({'health_status': health_status})  # Vrne rezultat kot JSON odgovor
+
+# Endpoint za klasifikacijo vrste rastline
+@app.route('/species', methods=['POST'])
+def classify_species():
+    if 'file' not in request.files:
+        return jsonify({'error': 'Nobena datoteka ni bila poslana'}), 400
+
+    file = request.files['file']
+    image = Image.open(file.stream).convert('RGB')
+
+    # Ekstrakcija značilk iz slike
+    embedding = extract_image_embedding(image)
+
+    # Pretvorba v Orange podatkovno tabelo z uporabo modela za vrste
+    table = convert_to_orange_table(embedding, species_model)
+
+    # Napoved vrste rastline
+    species_prediction = species_model(table)[0]
+    probabilities = species_model.predict_proba(table)[0]  # Dobimo verjetnosti
+    confidence = max(probabilities) * 100  # Izračunamo zaupanje v napoved (v odstotkih)
+
+    # Pridobimo ime vrste iz oznak razredov, keeping only the part before "/"
+    species_name = species_class_labels[int(species_prediction)].split("/")[0]
+
+    return jsonify({'species_name': species_name, 'confidence': confidence})  # Vrne rezultat kot JSON
 
 # Endpoint za klasifikacijo bolezni glede na vrsto rastline
 @app.route('/sickness', methods=['POST'])
