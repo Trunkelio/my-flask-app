@@ -1,72 +1,141 @@
-attrs==19.3.0
-Automat==0.8.0
-blinker==1.8.2
-certifi==2019.11.28
-chardet==3.0.4
-click==8.1.7
-cloud-init==24.3.1
-colorama==0.4.3
-command-not-found==0.3
-configobj==5.0.6
-constantly==15.1.0
-cryptography==2.8
-dbus-python==1.2.16
-distro==1.4.0
-distro-info==0.23+ubuntu1.1
-entrypoints==0.3
-flask==3.0.3
-gunicorn==20.0.4
-httplib2==0.14.0
-hyperlink==19.0.0
-idna==2.8
-importlib-metadata==8.5.0
-incremental==16.10.1
-itsdangerous==2.2.0
-jinja2==3.1.4
-jsonpatch==1.22
-jsonpointer==2.0
-jsonschema==3.2.0
-keyring==18.0.1
-language-selector==0.1
-launchpadlib==1.10.13
-lazr.restfulclient==0.14.2
-lazr.uri==1.0.3
-MarkupSafe==2.1.5
-more-itertools==4.2.0
-netifaces==0.10.4
-numpy==1.24.4
-oauthlib==3.1.0
-pexpect==4.6.0
-pillow==10.4.0
-pyasn1==0.4.2
-pyasn1-modules==0.2.1
-PyGObject==3.36.0
-PyHamcrest==1.9.0
-PyJWT==1.7.1
-pymacaroons==0.13.0
-PyNaCl==1.3.0
-pyOpenSSL==19.0.0
-pyrsistent==0.15.5
-pyserial==3.4
-python-apt==2.0.1+ubuntu0.20.4.1
-python-debian==0.1.36+ubuntu1.1
-PyYAML==5.3.1
-requests==2.22.0
-requests-unixsocket==0.2.0
-SecretStorage==2.3.1
-service-identity==18.1.0
-simplejson==3.16.0
-six==1.14.0
-sos==4.5.6
-ssh-import-id==5.10
-systemd-python==234
-Twisted==18.9.0
-ubuntu-pro-client==8001
-ufw==0.36
-unattended-upgrades==0.1
-urllib3==1.25.8
-wadllib==1.3.3
-werkzeug==3.0.4
-zipp==3.20.2
-zope.interface==4.7.1
+attrs==19.3.0  # Omogoča enostavno delo z atributi v Python objektih
 
+Automat==0.8.0  # Gradnja končnih avtomatov za upravljanje stanj
+
+blinker==1.8.2  # Sistem signalov za komunikacijo med komponentami aplikacije
+
+certifi==2019.11.28  # Ponuja certifikate za SSL preverjanje
+
+chardet==3.0.4  # Detekcija kodiranja znakov v besedilu
+
+click==8.1.7  # Orodje za ustvarjanje ukazne vrstice (CLI) aplikacij
+
+cloud-init==24.3.1  # Inicializacija oblačnih instanc z nastavitvami
+
+colorama==0.4.3  # Barvanje izhodnega besedila v terminalu
+
+command-not-found==0.3  # Prikaz predlogov za manjkajoče ukaze
+
+configobj==5.0.6  # Parser za konfiguracijske datoteke
+
+constantly==15.1.0  # Ustvarjanje konstantnih vrednosti v Pythonu
+
+cryptography==2.8  # Kriptografske funkcije in varnostne operacije
+
+dbus-python==1.2.16  # Python vmesnik za D-Bus komunikacijski sistem
+
+distro==1.4.0  # Identifikacija Linux distribucij
+
+distro-info==0.23+ubuntu1.1  # Ponuja informacije o izdajah Linux distribucij
+
+entrypoints==0.3  # Upravljanje vstopnih točk za Python pakete
+
+flask==3.0.3  # Mikro spletni okvir za Python aplikacije
+
+gunicorn==20.0.4  # WSGI HTTP strežnik za UNIX
+
+httplib2==0.14.0  # Celovita HTTP klient knjižnica
+
+hyperlink==19.0.0  # Upravljanje in manipulacija URL-jev
+
+idna==2.8  # Podpora za mednarodne domene v aplikacijah
+
+importlib-metadata==8.5.0  # Dostop do metapodatkov importiranih modulov
+
+incremental==16.10.1  # Upravljanje inkrementalnih posodobitev
+
+itsdangerous==2.2.0  # Sigurno serializiranje podatkov za Flask aplikacije
+
+jinja2==3.1.4  # Templating engine za Python, uporabljen v Flasku
+
+jsonpatch==1.22  # Uporaba JSON Patch operacij za modifikacijo JSON podatkov
+
+jsonpointer==2.0  # Upravljanje JSON Pointer specifikacije
+
+jsonschema==3.2.0  # Validacija JSON podatkov glede na sheme
+
+keyring==18.0.1  # Dostop do sistemskega keyring storitve za shranjevanje skrivnosti
+
+language-selector==0.1  # Izbira jezika za lokalizacijo aplikacije
+
+launchpadlib==1.10.13  # Python knjižnica za dostop do Launchpad API
+
+lazr.restfulclient==0.14.2  # RESTful klient za Python aplikacije
+
+lazr.uri==1.0.3  # Parsiranje in manipulacija URI-jev
+
+MarkupSafe==2.1.5  # Varno obravnavanje nizov v templating engine
+
+more-itertools==4.2.0  # Razširjene funkcije za delo z iteratorji
+
+netifaces==0.10.4  # Informacije o mrežnih vmesnikih
+
+numpy==1.24.4  # Osnovna knjižnica za znanstveno računalništvo v Pythonu
+
+oauthlib==3.1.0  # Implementacija OAuth protokolov za avtentikacijo
+
+pexpect==4.6.0  # Kontrola interaktivnih aplikacij iz Python skript
+
+pillow==10.4.0  # Python Imaging Library za obdelavo slik
+
+pyasn1==0.4.2  # ASN.1 tipi in kodeki
+
+pyasn1-modules==0.2.1  # Preddefinirani ASN.1 moduli
+
+PyGObject==3.36.0  # Python vezje za GObject knjižnice
+
+PyHamcrest==1.9.0  # Knjižnica za pisanje matcher objektov v testih
+
+PyJWT==1.7.1  # Implementacija JSON Web Token (JWT) v Pythonu
+
+pymacaroons==0.13.0  # Macaroon žetoni za avtorizacijo
+
+PyNaCl==1.3.0  # Python vezje za Networking and Cryptography library
+
+pyOpenSSL==19.0.0  # Python ovitek za OpenSSL knjižnico
+
+pyrsistent==0.15.5  # Nepremičljive (immutable) zbirke za Python
+
+pyserial==3.4  # Dostop do serijskih vrat v Pythonu
+
+python-apt==2.0.1+ubuntu0.20.4.1  # Python vmesnik za libapt-pkg
+
+python-debian==0.1.36+ubuntu1.1  # Debian orodja za Python
+
+PyYAML==5.3.1  # YAML parser in emitter za Python
+
+requests==2.22.0  # HTTP knjižnica za Python
+
+requests-unixsocket==0.2.0  # Podpora za HTTP zahteve preko UNIX socketov
+
+SecretStorage==2.3.1  # Varno shranjevanje skrivnosti
+
+service-identity==18.1.0  # Preverjanje identitete storitev na podlagi certifikatov
+
+simplejson==3.16.0  # Hitri JSON encoder in decoder za Python
+
+six==1.14.0  # Knjižnica za kompatibilnost med Python 2 in 3
+
+sos==4.5.6  # Orodje za zajem sistemskih izhodov
+
+ssh-import-id==5.10  # Uvoz SSH ključev iz Launchpad ali GitHub
+
+systemd-python==234  # Python vezje za systemd
+
+Twisted==18.9.0  # Event-driven mrežni okvir za Python
+
+ubuntu-pro-client==8001  # Klient za Ubuntu Pro storitve
+
+ufw==0.36  # Enostaven požarni zid za upravljanje pravil
+
+unattended-upgrades==0.1  # Samodejno nameščanje varnostnih posodobitev
+
+urllib3==1.25.8  # HTTP klient z varnostjo in povezljivostjo
+
+wadllib==1.3.3  # Knjižnica za spletni razvoj aplikacij
+
+werkzeug==3.0.4  # WSGI orodjarna knjižnica za Python, uporabljena v Flasku
+
+zipp==3.20.2  # Popravek za pathlib-kompatibilno obdelavo zip datotek
+
+zope.interface==4.7.1  # Vmesniki za Python objekte
