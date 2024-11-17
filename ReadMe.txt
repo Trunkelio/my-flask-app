@@ -131,3 +131,109 @@ Opombe
 Prepričajte se, da imate nameščene vse zahtevane Python pakete, kot je navedeno v requirements.txt.
 Če strežnik gosti več aplikacij, preverite nastavitve Nginx in Gunicorn, da se izognete konfliktom.
 app.py privzeto uporablja CPU za vse izračune. Če imate na voljo GPU in potrebujete optimizacijo, poskrbite za ustrezno prilagoditev v klicih torch.
+
+
+
+****Ta namestitev omogoča, da Flask aplikacija teče kot trajna storitev in ostane dostopna, tudi ko se odjavite iz SSH. *****
+
+Zahteve
+Strežnik z Ubuntu (npr. VM na Oracle Cloud).
+Flask aplikacija v mapi (npr. /home/ubuntu/my-flask-app).
+Gunicorn nameščen v virtualnem okolju.
+Nginx nameščen na strežniku.
+
+
+Korak 1: Konfiguracija Gunicorn kot systemd storitve
+Ustvarite systemd storitveno datoteko za Gunicorn:
+
+bash
+sudo nano /etc/systemd/system/gunicorn.service
+
+Dodajte naslednjo konfiguracijo:
+Po potrebi zamenjajte poti in uporabniška imena:
+
+ini
+*code start*
+[Unit]
+Description=Gunicorn instance to serve Flask app
+After=network.target
+
+[Service]
+User=ubuntu  # Zamenjajte z vašim uporabniškim imenom
+Group=www-data
+WorkingDirectory=/home/ubuntu/my-flask-app  # Pot do vaše aplikacije
+Environment="PATH=/home/ubuntu/my-flask-app/venv/bin"  # Pot do vašega virtualnega okolja
+ExecStart=/home/ubuntu/my-flask-app/venv/bin/gunicorn --workers 4 --timeout 120 -b 127.0.0.1:8080 wsgi:app
+
+[Install]
+WantedBy=multi-user.target
+User: Uporabniško ime, pod katerim bo tekel Gunicorn.
+WorkingDirectory: Pot do vaše Flask aplikacije.
+Environment: Pot do bin mape v vašem virtualnem okolju.
+ExecStart: Ukaz za zagon Gunicorn, ki posluša na 127.0.0.1:8080.
+Zaženite in omogočite Gunicorn storitev:
+
+bash
+sudo systemctl daemon-reload
+sudo systemctl start gunicorn
+sudo systemctl enable gunicorn
+Preverite stanje storitve:
+
+bash
+sudo systemctl status gunicorn
+Ta ukaz bi moral pokazati, da je Gunicorn active (running).
+
+Korak 2: Konfiguracija Nginx kot povratni posrednik (reverse proxy)
+Ustvarite strežniški blok v Nginx za Flask aplikacijo:
+
+bash
+sudo nano /etc/nginx/sites-available/my-flask-app
+
+Dodajte naslednjo konfiguracijo:
+
+Zamenjajte 129.152.26.137 z vašim javnim IP naslovom ali domeno, če je na voljo.
+
+nginx
+
+server {
+    listen 80;
+    server_name 129.152.26.137;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+
+Omogočite konfiguracijo:
+Ustvarite simbolno povezavo do mape sites-enabled, da aktivirate konfiguracijo:
+
+bash
+sudo ln -s /etc/nginx/sites-available/my-flask-app /etc/nginx/sites-enabled/
+Preizkusite in ponovno naložite Nginx:
+
+Preizkusite konfiguracijo Nginx, da preverite, ali so prisotne kakšne napake v sintaksi:
+
+bash
+sudo nginx -t
+Če ni napak, ponovno naložite Nginx, da uporabite spremembe:
+
+bash
+sudo systemctl reload nginx
+Končno testiranje in odpravljanje napak
+Preverite dostop: Obiščite http://129.152.26.137, da preverite, ali je vaša Flask aplikacija dostopna prek HTTP.
+
+Preverite Gunicorn dnevnik za morebitne težave z aplikacijo:
+
+bash
+sudo journalctl -u gunicorn
+Preverite Nginx dnevnik za težave s povezavo:
+
+bash
+sudo tail -f /var/log/nginx/error.log
+S tem postopkom vaša Flask aplikacija teče kot storitev z Gunicorn in je dostopna prek Nginx-a na naslovu HTTP. Gunicorn bo še naprej deloval tudi po zaprtju SSH povezave, Nginx pa bo obravnaval dohodne HTTP zahteve in jih posredoval Gunicorn.
+
