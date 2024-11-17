@@ -48,7 +48,7 @@ squeezenet = squeezenet.to(device)
 
 # Definiraj transformacije za vhodne slike
 transform = transforms.Compose([
-    transforms.Resize((256, 256)),  # Spremeni velikost slike na 256x256 pikslov
+    #transforms.Resize((256, 256)),  # Spremeni velikost slike na 256x256 pikslov
     transforms.ToTensor(),  # Pretvori sliko v tenzor
     transforms.Normalize([0.485, 0.456, 0.406],  # Normaliziraj srednje vrednosti kanalov
                          [0.229, 0.224, 0.225])  # Normaliziraj standardne odklone kanalov
